@@ -34,27 +34,37 @@ const countEntropy = function (lettersObj) {
 
 const analyzeEncodedText = function (filePath) {
   const fileContent = fs.readFileSync(filePath);
-  const charsLength = fileContent.length;
   const encodedText = CustomBase64.encode(fileContent);
+  const charsLength = encodedText.length
   const lettersObj = countLettersFrequency(encodedText, charsLength);
   const entropy = countEntropy(lettersObj);
 
-
-  console.log("\nCustom encoded text:");
+  console.log(`\nAmount of information in bytes ${(entropy * charsLength / 8).toFixed(5)}`);
+  console.log("Custom encoded text:");
   console.log(encodedText);
-  console.log(entropy * charsLength / 8);
+
+  return encodedText;
 }
 
 const init = function () {
+  let encoded;
   console.log("Encoded text");
-  analyzeEncodedText(frankoFilePath);
-  analyzeEncodedText(restFilePath);
-  analyzeEncodedText(terrariaFilePath);
+  encoded = analyzeEncodedText(frankoFilePath);
+  console.log("Decoded Text:");
+  console.log(Buffer.from(encoded, "base64").toString('utf8'));
 
-  console.log("Encoded archive files");
+  encoded = analyzeEncodedText(restFilePath);
+  console.log("Decoded Text:");
+  console.log(Buffer.from(encoded, "base64").toString('utf8'));
+
+  encoded = analyzeEncodedText(terrariaFilePath);
+  console.log("\nDecoded Text:");
+  console.log(Buffer.from(encoded, "base64").toString('utf8'));
+
+  console.log("\nEncoded archive files");
   analyzeEncodedText(frankoFilePath + extension);
   analyzeEncodedText(restFilePath + extension);
   analyzeEncodedText(terrariaFilePath + extension);
 }
 
-init();
+init()
